@@ -7,7 +7,7 @@ FROM golang:1.16 as builder
 
 COPY --from=modules /go/pkg /go/pkg
 
-RUN useradd -u 10001 shortener_user
+RUN useradd -u 12345 shortener_user
 
 RUN mkdir -p /app
 ADD . /app
