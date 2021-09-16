@@ -1,0 +1,33 @@
+version: '3.7'
+
+services:
+  shortener:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - $PORT:$PORT
+    environment:
+      - PORT=$PORT
+      - PG_PASSWD=$PG_PASSWD
+      - PG_USER=$PG_USER
+      - PG_DB=$PG_DB
+      - PG_PORT=$PG_PORT
+      - PG_HOST=db
+    depends_on:
+      - db
+
+  db:
+    image: postgres:12-alpine
+    restart: always
+    ports:
+      - $PG_PORT:$PG_PORT
+    volumes:
+      - .volumes/db/sql_data:/var/lib/postgresql/data:z
+    environment:
+      POSTGRES_PASSWORD: $PG_PASSWD
+    healthcheck:
+      test: PGPASSWORD=$PG_PASSWD psql -U $PG_USER --command='SELECT 1'
+      interval: 1s
+      timeout: 2s
+      retries: 5
